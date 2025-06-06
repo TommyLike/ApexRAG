@@ -1,0 +1,179 @@
+# run mode(debug|test|release)
+RunMode = "debug"
+
+# Whether to enable swagger
+Swagger = true
+
+# Whether to print configuration parameters at startup
+PrintConfig = true
+
+[HTTP]
+# http listening address
+Host = "0.0.0.0"
+# http listening port
+Port = 8080
+# Certification path
+CertFile = ""
+# Certificate key
+KeyFile = ""
+# http graceful shutdown wait timeout time (in seconds)
+ShutdownTimeout = 30
+# Maximum allowed content length (64M)
+MaxContentLength = 67108864
+# Maximum log length allowed for output
+MaxLoggerLength = 4096
+
+[Log]
+# Log level (1: fatal 2: error, 3: warn, 4: info, 5: debug, 6: trace)
+Level = 5
+
+[[tenants]]
+id = "tenant-001"
+name = "Alpha Corp"
+
+[[tenants.content_collections]]
+id = "alpha-docs-v1"
+name = "Alpha Public Documents"
+
+[[tenants.content_collections.data_sources]]
+id = "alpha-website"
+type = "web"
+schedule = "@daily"
+
+[tenants.content_collections.data_sources.config]
+urls = [ "https://alpha.com/docs", "https://alpha.com/blog" ]
+crawl_depth = 2
+
+
+[[tenants.content_collections.data_sources]]
+id = "alpha-product-api"
+type = "api"
+schedule = "0 */6 * * *"
+
+[tenants.content_collections.data_sources.config]
+endpoint = "https://api.alpha.com/products"
+api_key_env = "ALPHA_API_KEY"
+
+[tenants.content_collections.data_sources.retry_policy]
+max_attempts = 5
+initial_interval = "30s"
+
+# Log format (support output format: text/json)
+Format = "json"
+# Log output (support: stdout/stderr/file)
+Output = "stdout"
+# Specify the file path for log output
+OutputFile = "data/gin-admin.log"
+
+# Service monitoring (GOPS: https://github.com/google/gops)
+[Monitor]
+# Whether to enable
+Enable = false
+# HTTP listening address and port
+Addr = "127.0.0.1:16060"
+# Configuration file directory (empty, use the default directory)
+ConfigDir = ""
+
+# redis configuration information
+[Redis]
+# address
+Addr = "127.0.0.1:6379"
+# password
+Password = ""
+
+[JWTAuth]
+# Whether to enable
+Enable = true
+# Signature method (support: HS512/HS384/HS512)
+SigningMethod = "HS512"
+# Signature key
+SigningKey = "gin-admin"
+# Expiration time (in seconds)
+Expired = 7200
+# Storage (support: file/redis)
+Store = "file"
+# file path
+FilePath = "data/jwt_auth.db"
+# redis database (if the storage method is redis, specify the stored database)
+RedisDB = 10
+# The key name prefix stored in the redis database
+RedisPrefix = "auth_"
+
+# Request frequency limit (if redis is available, use redis, otherwise use memory storage)
+[RateLimiter]
+# Whether to enable
+Enable = false
+# The maximum number of requests allowed per user per minute
+Count = 300
+# redis database (if the storage method is redis, specify the stored database)
+RedisDB = 10
+
+[CORS]
+# Whether to enable
+Enable = false
+# List of domain names that allow cross-domain requests (* means all are allowed)
+AllowOrigins = ["*"]
+# List of request methods that allow cross-domain requests
+AllowMethods = ["GET","POST","PUT","DELETE","PATCH"]
+# List of non-simple headers that clients are allowed to use with cross-domain requests
+AllowHeaders = []
+# Whether the request can include user credentials such as cookies, HTTP authentication or client SSL certificates
+AllowCredentials = true
+# The time for which the results of the preflight request can be cached (in seconds)
+MaxAge = 7200
+
+[GZIP]
+# Whether to enable
+Enable = false
+# Excluded file extension
+ExcludedExtentions = [".png",".gif",".jpeg",".jpg"]
+# Excluded request path
+ExcludedPaths = []
+
+[Gorm]
+# Whether to enable debugging mode
+Debug = true
+# Database type (currently supported database type: mysql/sqlite3/postgres)
+DBType = "sqlite3"
+# Set the maximum time that the connection can be reused (unit: second)
+MaxLifetime = 7200
+# Set the maximum number of open connections for the database
+MaxOpenConns = 150
+# Set the maximum number of connections in the free connection pool
+MaxIdleConns = 50
+# Database table name prefix
+TablePrefix = ""
+# Whether to enable automatic mapping of database table structure
+EnableAutoMigrate = true
+
+[MySQL]
+# Connection address
+Host = "127.0.0.1"
+# Connection port
+Port = 3306
+# username
+User = "root"
+# password
+Password = "password#123"
+# Database
+DBName = "ddd-gin-admin"
+# Connection parameters
+Parameters = "charset=utf8mb4&parseTime=True&loc=Local&allowNativePasswords=true"
+
+[Postgres]
+# Connection address
+Host = "127.0.0.1"
+# Connection port
+Port = 5432
+# username
+User = "root"
+# password
+Password = "123456"
+# Database
+DBName = "gin-admin"
+# SSL mode
+SSLMode = "disable"
+
+[Sqlite3]
+# Database path
+Path = "data/gin-admin.db"
